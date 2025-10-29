@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 # Simple & tolerant (no -euo/pipefail): we want a best-effort packer
 
 # ---- Config

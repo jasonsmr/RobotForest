@@ -2,7 +2,9 @@
 .gradle/
 .local/
 build/
+app/build/
 captures/
+.gradle/
 .externalNativeBuild/
 .cxx/
 **/build/
@@ -19,6 +21,8 @@ captures/
 
 # APK / AAB outputs
 *.apk
+/*.apk
+*.ap_
 *.aab
 
 # Native outputs & intermediates
@@ -35,3 +39,7 @@ captures/
 # Our runtime payload is produced by CI / attached to releases, not committed
 app/src/main/assets/runtime/**
 !app/src/main/assets/runtime/.keep
+
+# ------ runtime artifacts
+/out/runtime
+/scripts/runtime/runtime_staging/**
