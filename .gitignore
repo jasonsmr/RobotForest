@@ -1,46 +1,37 @@
-# Android / Gradle
-*.iml
+# Android/Gradle
 .gradle/
 .local/
-.idea/
 build/
 captures/
 .externalNativeBuild/
 .cxx/
-.gradle/
 **/build/
-**/.gradle/
-**/.cxx/
 
-# APK / bundles / intermediates
-*.apk
-*.ap_
-*.aab
-*.aar
+# IDE
+.idea/
+*.iml
 
-# Keystores & secrets
-*.jks
+# Keystores (never commit real keys)
 *.keystore
-*.keystore.properties
-keystore.properties
+*.jks
 *.pem
 *.p12
-*.asc
+
+# APK / AAB outputs
+*.apk
+*.aab
+
+# Native outputs & intermediates
+*.so
+*.o
+*.a
+*.d
+*.ll
+*.bc
 
 # Logs
 *.log
-*.trace
-hs_err_pid*
 
-# OS junk
-.DS_Store
-Thumbs.db
-
-# Termux / misc
-*.swp
-*.swo
-
-# NDK/SDK caches (safe to re-download on CI/local)
-.sdkman/
-.android/
-.cargo/
+# Our runtime payload is produced by CI / attached to releases, not committed
+app/src/main/assets/runtime/**
+!app/src/main/assets/runtime/.keep

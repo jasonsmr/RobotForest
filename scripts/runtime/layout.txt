@@ -1,0 +1,12 @@
+Expected staging tree (one of these will be packed):
+
+A) Custom staging dir (preferred, CI-safe):
+   scripts/runtime/runtime_staging/
+     bin/box64
+     wine/...
+     ... (any other payload)
+
+B) Fallback (kept for compatibility if you already have it):
+   app/src/main/assets/runtime/
+     bin/box64
+     wine/...

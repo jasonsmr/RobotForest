@@ -1,0 +1,48 @@
+name: Runtime Pack
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: {}
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build runtime ZIP
+        run: |
+          bash scripts/runtime/make_runtime.sh
+        shell: bash
+
+      - name: Upload runtime artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-zip
+          path: |
+            out/runtime/runtime-*.zip
+            out/runtime/runtime-*.zip.sha256
+            out/runtime/runtime-manifest.json
+          if-no-files-found: warn
+
+      # If a snapshot tag exists in the push, attach the ZIP to that draft Release too.
+      - name: Attach to snapshot release (if tag exists)
+        if: startsWith(github.ref, 'refs/tags/snapshot-')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          # Create draft if missing
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --draft -t "$TAG" -n "Automated snapshot"
+          # Upload artifacts
+          ZIP=$(ls out/runtime/runtime-*.zip | tail -n1 || true)
+          SUM=$(ls out/runtime/runtime-*.zip.sha256 | tail -n1 || true)
+          MAN=out/runtime/runtime-manifest.json
+          [ -f "$ZIP" ] && gh release upload "$TAG" "$ZIP" --clobber || true
+          [ -f "$SUM" ] && gh release upload "$TAG" "$SUM" --clobber || true
+          [ -f "$MAN" ] && gh release upload "$TAG" "$MAN" --clobber || true
