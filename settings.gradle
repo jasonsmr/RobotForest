@@ -1,0 +1,21 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    // Pin the Android Gradle Plugin version so `id "com.android.application"` resolves.
+    plugins {
+        id "com.android.application" version "8.1.2"
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "RobotForest"
+include(":app")

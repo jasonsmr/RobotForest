@@ -1,0 +1,4 @@
+/data/data/com.termux/files/home/android/RobotForest/app/.cxx/Debug/2c5c4gk3/armeabi-v7a/CMakeFiles/launcher.dir
+/data/data/com.termux/files/home/android/RobotForest/app/.cxx/Debug/2c5c4gk3/armeabi-v7a/CMakeFiles/native_app_glue.dir
+/data/data/com.termux/files/home/android/RobotForest/app/.cxx/Debug/2c5c4gk3/armeabi-v7a/CMakeFiles/edit_cache.dir
+/data/data/com.termux/files/home/android/RobotForest/app/.cxx/Debug/2c5c4gk3/armeabi-v7a/CMakeFiles/rebuild_cache.dir

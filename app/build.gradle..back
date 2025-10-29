@@ -1,0 +1,85 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.robotforest.launcher'
+    compileSdk 34
+    ndkVersion "27.1.12297006"
+    buildToolsVersion "34.0.4"
+
+    signingConfigs {
+        release {
+	    storeFile file(RELEASE_STORE_FILE)
+	    storePassword RELEASE_STORE_PASSWORD
+	    keyAlias RELEASE_KEY_ALIAS
+	    keyPassword RELEASE_KEY_PASSWORD
+        }
+    }
+
+
+
+    defaultConfig {
+        applicationId "com.robotforest.launcher"
+        minSdk 28
+        targetSdk 34
+        versionCode 3
+        versionName "0.3"
+
+        ndk { abiFilters "arm64-v8a" }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+                // Ensure AGP uses aarch64 host tools from the NDK
+                arguments "-DANDROID_NDK_HOST_TAG=linux-aarch64"
+                // Match local.properties cmake.dir version:
+                version "3.30.5"
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+	    applicationIdSuffix ".debug"
+            minifyEnabled false
+            shrinkResources false
+            debuggable true
+        }
+        release {
+            minifyEnabled false
+            shrinkResources false
+	    signingConfig signingConfigs.release
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+	    version "3.30.5"
+            path "src/main/cpp/CMakeLists.txt"
+        }
+    }
+
+    packaging {
+        jniLibs { useLegacyPackaging true }
+    }
+
+    lint { abortOnError false }
+
+    buildFeatures {
+        buildConfig true
+        prefab false
+        aidl false
+        renderScript false
+        shaders true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    // none for pure NativeActivity
+}

@@ -1,0 +1,105 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace "com.robotforest.launcher"
+    compileSdk 34
+    ndkVersion "27.1.12297006"
+
+    defaultConfig {
+        ndk { abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64" }
+
+        applicationId "com.robotforest.launcher"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "0.1-prealpha"
+	buildToolsVersion "34.0.4"
+
+        // Native bits
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_STL=c++_static"
+                cFlags "-O2"
+                cppFlags "-std=c++17 -O2"
+		version "3.30.5"
+            }
+        }
+
+        // For file pickers and persisted URI perms
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    // ---- RobotForest signing rule (DO NOT REMOVE) ----
+    // Use RELEASE_* from gradle.properties if present and file exists;
+    // otherwise fall back to standard debug keystore (~/.android/debug.keystore).
+    signingConfigs {
+        release {
+            def debugKs = new File(System.getProperty("user.home"), ".android/debug.keystore")
+
+            def props = new Properties()
+            def propsFile = rootProject.file("gradle.properties")
+            if (propsFile.exists()) {
+                props.load(new FileInputStream(propsFile))
+            }
+            def relFile = props.getProperty("RELEASE_STORE_FILE") ?: ""
+            def relPass = props.getProperty("RELEASE_STORE_PASSWORD") ?: ""
+            def relAlias = props.getProperty("RELEASE_KEY_ALIAS") ?: ""
+            def relKeyPw = props.getProperty("RELEASE_KEY_PASSWORD") ?: ""
+
+            if (relFile && file(relFile).exists()) {
+                storeFile file(relFile)
+                storePassword relPass
+                keyAlias relAlias
+                keyPassword relKeyPw
+            } else {
+                storeFile debugKs
+                storePassword "android"
+                keyAlias "androiddebugkey"
+                keyPassword "android"
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
+        release {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    // CMake: path only (no explicit version)
+    externalNativeBuild {
+        cmake {
+            path file("src/main/cpp/CMakeLists.txt")
+	    version "3.30.5"
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    // AGP 8 style (older packagingOptions also worked, but this is future-proof)
+    packaging {
+        resources {
+            excludes += ["META-INF/LICENSE*", "META-INF/NOTICE*"]
+        }
+    }
+
+    // Preserve legacy external storage behavior for picker lanes (we still request SAF/All files properly)
+    lint {
+        checkReleaseBuilds true
+        warningsAsErrors false
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+}

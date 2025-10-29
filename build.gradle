@@ -1,0 +1,119 @@
+// Root build.gradle — Bullet-proof AAPT2 guard for Termux/Android
+// Swaps any cached x86_64 "aapt2" for an aarch64 shim during the whole build.
+
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
+
+import org.gradle.api.services.BuildService
+import org.gradle.api.services.BuildServiceParameters
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.ListProperty
+
+buildscript {
+    repositories { google(); mavenCentral() }
+}
+
+// ---- Force known-good AAPT2 properties (don’t mutate StartParameter; just set system props)
+[
+    'android.aapt2FromMaven'               : 'false',
+    'android.aapt2FromMavenOverride.enable': 'true',
+    'android.aapt2FromMavenOverride.path'  : "${System.properties['user.home']}/opt/android-sdk/build-tools/34.0.4/aapt2",
+    'android.enableAapt2Daemon'            : 'false',
+    'com.android.build.aapt2.fromMaven'    : 'false',
+    'com.android.build.aapt2.useDaemon'    : 'false',
+    'ANDROID_AAPT2_USE_DAEMON'             : 'false',
+].each { k, v -> System.setProperty(k, v) }
+
+ext.RF = [
+    realAapt2 : Paths.get(System.properties['user.home'], "opt/android-sdk/build-tools/34.0.4/aapt2"),
+    shim      : Paths.get(System.properties['user.home'], "bin/rf-aapt2"),
+    homes     : [
+        Paths.get(System.properties['user.home'], ".gradle"),
+        Paths.get(System.properties['user.home'], ".gradle-rf")
+    ],
+    periodMs  : 75
+]
+
+// ---- Long-lived guard service
+abstract class Aapt2GuardService implements BuildService<Aapt2GuardService.Params>, AutoCloseable {
+    interface Params extends BuildServiceParameters {
+        Property<String> getShimPath()
+        ListProperty<String> getHomes()
+        Property<Integer> getPeriodMs()
+    }
+
+    private final AtomicBoolean running = new AtomicBoolean(false)
+    private final java.util.concurrent.ScheduledExecutorService exec =
+        Executors.newSingleThreadScheduledExecutor({ r ->
+            Thread t = new Thread(r, "rf-aapt2-guard"); t.setDaemon(true); return t
+        } as java.util.concurrent.ThreadFactory)
+
+    @Override
+    void close() {
+        running.set(false)
+        exec.shutdownNow()
+        try { exec.awaitTermination(2, TimeUnit.SECONDS) } catch (InterruptedException ignored) {}
+    }
+
+    void startGuard() {
+        if (!running.compareAndSet(false, true)) return
+        final Path shim = Paths.get(parameters.shimPath.get())
+        if (!Files.exists(shim)) throw new GradleException("rf-aapt2 shim not found: " + shim)
+        try { shim.toFile().setExecutable(true, true) } catch (Throwable ignored) {}
+        final int period = parameters.periodMs.get()
+
+        exec.scheduleAtFixedRate({
+            try {
+                parameters.homes.get().each { String homeStr ->
+                    Path caches = Paths.get(homeStr, "caches")
+                    if (!Files.exists(caches)) return
+                    Files.walk(caches)
+                        .filter { p -> Files.isRegularFile(p) && p.getFileName().toString().equals("aapt2") }
+                        .forEach { Path p ->
+                            try {
+                                try { p.toFile().setWritable(true, true) } catch (Throwable ignored2) {}
+                                Files.copy(shim, p, StandardCopyOption.REPLACE_EXISTING)
+                                p.toFile().setExecutable(true, false)
+                            } catch (Throwable t) {
+                                // best effort
+                            }
+                        }
+                }
+            } catch (Throwable ignore) {}
+        }, 0L, period as long, TimeUnit.MILLISECONDS)
+    }
+}
+
+def aapt2Guard = gradle.sharedServices.registerIfAbsent("rfAapt2Guard", Aapt2GuardService) { spec ->
+    spec.parameters.shimPath.set(RF.shim.toString())
+    spec.parameters.homes.set(RF.homes.collect { it.toString() })
+    spec.parameters.periodMs.set(RF.periodMs as Integer)
+}
+
+tasks.register("rfPatchAllAapt2") {
+    group = "robotforest"
+    description = "Start the rf-aapt2 guard and do an immediate sweep"
+    doFirst {
+        Path real = RF.realAapt2
+        if (!Files.exists(real)) throw new GradleException("SDK aapt2 missing: " + real)
+        try { real.toFile().setExecutable(true, true) } catch (Throwable ignored) {}
+        aapt2Guard.get().startGuard()
+    }
+}
+
+// Hook the guard in before any *Resources task across all projects
+gradle.projectsEvaluated {
+    allprojects { proj ->
+        proj.tasks.configureEach { t ->
+            String n = t.name.toLowerCase(Locale.ROOT)
+            if (n.contains("process") && n.endsWith("resources")) {
+                t.dependsOn(rootProject.tasks.named("rfPatchAllAapt2"))
+            }
+        }
+    }
+}

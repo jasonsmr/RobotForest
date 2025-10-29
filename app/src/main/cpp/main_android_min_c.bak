@@ -1,0 +1,81 @@
+// Minimal NativeActivity launcher that extracts assets/runtime/box64/bin/box64
+// to app-internal storage and runs: box64 -v (for sanity). Replace argv later
+// with your Wine/DXVK pipeline.
+//
+// AndroidManifest.xml has:
+//   <meta-data android:name="android.app.lib_name" android:value="launcher"/>
+//
+// So this library *must* be named "launcher" by CMake.
+
+#include <android/log.h>
+#include <android/native_activity.h>
+#include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include "asset_extract.h"
+
+#define LOG_TAG "SkyrimLauncher"
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,  LOG_TAG, __VA_ARGS__)
+
+static void* runner(void* arg) {
+    ANativeActivity* activity = (ANativeActivity*)arg;
+
+    // 1) Make a runtime dir inside internal storage
+    const char* filesDir = activity->internalDataPath; // /data/data/<pkg>/files
+    char runtimeDir[1024];
+    snprintf(runtimeDir, sizeof(runtimeDir), "%s/runtime", filesDir);
+    mkdir(runtimeDir, 0700);
+
+    // 2) Extract box64 from assets to files/runtime/box64/bin/box64
+    const char* rel_src = "runtime/box64/bin/box64"; // path inside assets/
+    char dst[1024];
+    snprintf(dst, sizeof(dst), "%s/%s", filesDir, rel_src);
+
+    // Ensure parent dirs exist
+    mkpath(dst, 0700);
+
+    int ok = extract_asset_file(activity->assetManager, rel_src, dst, 0755);
+    if (!ok) {
+        LOGE("Failed to extract asset: %s", rel_src);
+        return NULL;
+    }
+
+    // 3) Simple sanity run: `box64 -v`
+    //    (swap this out for your Wine/DXVK chain later)
+    const char* argv[] = { dst, "-v", NULL };
+    LOGI("Launching: %s -v", dst);
+
+    pid_t pid = fork();
+    if (pid == 0) {
+        // Child: redirect stdout/stderr to logcat via pipe is optional;
+        // keeping it simple here and just exec().
+        execv(dst, (char* const*)argv);
+        _exit(127); // exec failed
+    } else if (pid > 0) {
+        int status = 0;
+        waitpid(pid, &status, 0);
+        LOGI("box64 finished with status=%d", status);
+    } else {
+        LOGE("fork() failed");
+    }
+
+    return NULL;
+}
+
+void ANativeActivity_onCreate(ANativeActivity* activity,
+                              void* savedState, size_t savedStateSize) {
+    (void)savedState; (void)savedStateSize;
+    LOGI("ANativeActivity_onCreate");
+
+    // Spin a thread to keep main thread clean
+    pthread_t t;
+    pthread_create(&t, NULL, runner, activity);
+    pthread_detach(t);
+}

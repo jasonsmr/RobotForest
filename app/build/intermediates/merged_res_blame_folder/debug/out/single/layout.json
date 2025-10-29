@@ -1,0 +1,6 @@
+[
+    {
+        "merged": "com.robotforest.launcher.app-mergeDebugResources-30:/layout/activity_main.xml",
+        "source": "com.robotforest.launcher.app-main-33:/layout/activity_main.xml"
+    }
+]

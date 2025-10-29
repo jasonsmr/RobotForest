@@ -1,0 +1,107 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.example.skyrimlauncher'
+    compileSdk 34
+        // If you want to pin an NDK version (optional). Comment out if you prefer “latest”.
+    ndkVersion "27.1.12297006"
+
+    defaultConfig {
+        applicationId "com.example.skyrimlauncher"
+        minSdk 28
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        // CMake/Ndk config for arm64 only (Z Fold 4 / Snapdragon 8 Gen1)
+        ndk {
+            abiFilters "arm64-v8a"
+        }
+	// Point Gradle to your CMakeLists
+	//externalNativeBuild {
+        //    cmake {
+	//    path file("src/main/cpp/CMakeLists.txt")
+	    // version "3.30.5" 
+	    // uncomment if you need to force a specific one.
+	//    cppFlags ""
+	    // Force aarch64 host tools inside the NDK.
+	//    arguments "-DANDROID_NDK_HOST_TAG=linux-aarch64"
+	    // Use the CMake bundled by the SDK; version number can be omitted.
+	//    path file("src/main/cpp/CMakeLists.txt")
+	    // version "3.30.5" // uncomment if you need to force a specific one.
+	//    }
+	//}
+    }
+
+    buildTypes {
+        debug {
+            // Old name 'isMinifyEnabled' -> correct is 'minifyEnabled'
+            minifyEnabled false
+            shrinkResources false
+            debuggable true
+        }
+        release {
+            // Start without shrinking until you’ve sorted native symbols/proguard rules
+            minifyEnabled false
+            shrinkResources false
+        }
+    }
+
+    // If you want to pin an NDK version (optional). Comment out if you prefer “latest”.
+    // ndkVersion "27.1.12297006"
+
+    // Point Gradle to your CMakeLists
+        externalNativeBuild {
+
+            cmake {
+	    path file("src/main/cpp/CMakeLists.txt")
+	    // version "3.30.5"
+	    // uncomment if you need to force a specific one.
+	    cppFlags ""
+	    // Force aarch64 host tools inside the NDK.
+	    arguments "-DANDROID_NDK_HOST_TAG=linux-aarch64"
+	    // Use the CMake bundled by the SDK; version number can be omitted.
+	    path file("src/main/cpp/CMakeLists.txt")
+	    // version "3.30.5" // uncomment if you need to force a specific one.
+	    }
+	}
+
+    // AGP 8: packagingOptions -> packaging
+    packaging {
+        // Keep legacy jni packaging so native libs land under lib/ properly on older devices
+        jniLibs {
+            useLegacyPackaging true
+        }
+        // If you start shipping shaders/assets with duplicate names, you can add pickFirsts here.
+        // resources {
+        //     pickFirsts += ["META-INF/*"]
+        // }
+    }
+
+    // Keep builds smooth in Termux
+    lint {
+        abortOnError false
+    }
+
+    buildFeatures {
+        // We’re not using Compose/View binding here
+        buildConfig true
+        prefab false
+        aidl false
+        renderScript false
+        shaders true
+    }
+
+    // Java 17 is required by AGP 8.x
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    // No Java/Kotlin deps required for pure NativeActivity.
+    // Add AndroidX/etc. here if/when you introduce Java UI.
+}

@@ -1,0 +1,46 @@
+# Android / Gradle
+*.iml
+.gradle/
+.local/
+.idea/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+.gradle/
+**/build/
+**/.gradle/
+**/.cxx/
+
+# APK / bundles / intermediates
+*.apk
+*.ap_
+*.aab
+*.aar
+
+# Keystores & secrets
+*.jks
+*.keystore
+*.keystore.properties
+keystore.properties
+*.pem
+*.p12
+*.asc
+
+# Logs
+*.log
+*.trace
+hs_err_pid*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Termux / misc
+*.swp
+*.swo
+
+# NDK/SDK caches (safe to re-download on CI/local)
+.sdkman/
+.android/
+.cargo/

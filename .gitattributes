@@ -1,0 +1,17 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# Treat common binary types
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.mp3 binary
+*.mp4 binary
+*.ogg binary
+*.zip binary
+*.aar binary
+*.aab binary
+*.apk binary
+*.keystore binary
+*.jks binary
