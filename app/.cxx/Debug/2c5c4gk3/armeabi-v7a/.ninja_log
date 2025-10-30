@@ -93,3 +93,8 @@
 19	181	1761800607054060328	CMakeFiles/native_app_glue.dir/data/data/com.termux/files/home/opt/android-sdk/ndk/27.1.12297006/sources/android/native_app_glue/android_native_app_glue.c.o	b405209d0d296b5
 181	210	1761800607218060328	libnative_app_glue.a	54151c04998a2499
 210	307	1761800607246060327	/data/data/com.termux/files/home/android/RobotForest/app/build/intermediates/cxx/Debug/2c5c4gk3/obj/armeabi-v7a/liblauncher.so	90f845ef7e8ea608
+24	41	1761801105030060138	clean	e0c2edd90121eed2
+6	86	1761801108414060136	CMakeFiles/launcher.dir/main_android.c.o	21b01111336ab5f1
+5	164	1761801108414060136	CMakeFiles/native_app_glue.dir/data/data/com.termux/files/home/opt/android-sdk/ndk/27.1.12297006/sources/android/native_app_glue/android_native_app_glue.c.o	b405209d0d296b5
+164	193	1761801108570060136	libnative_app_glue.a	54151c04998a2499
+193	260	1761801108602060136	/data/data/com.termux/files/home/android/RobotForest/app/build/intermediates/cxx/Debug/2c5c4gk3/obj/armeabi-v7a/liblauncher.so	90f845ef7e8ea608
