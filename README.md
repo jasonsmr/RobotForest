@@ -15,3 +15,6 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 - Artifacts are uploaded as workflow artifacts (not released automatically).
 
 > Note: Signing configs remain local; CI only builds debug for safety.
+
+## Status
+[![runtime-verify](https://github.com/jasonsmr/RobotForest/actions/workflows/runtime-verify.yml/badge.svg)](https://github.com/jasonsmr/RobotForest/actions/workflows/runtime-verify.yml)

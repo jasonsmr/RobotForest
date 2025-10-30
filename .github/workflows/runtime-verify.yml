@@ -1,0 +1,28 @@
+name: runtime-verify
+on:
+  push:
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify runtime manifest URL and sha256
+        shell: bash
+        run: |
+          set -euo pipefail
+          MAN="scripts/runtime/runtime-manifest.json"
+          jq -e '.url and .sha256 and .subdir' "$MAN" >/dev/null
+          URL="$(jq -r .url "$MAN")"
+          SHA_EXPECT="$(jq -r .sha256 "$MAN")"
+          TMP="$RUNNER_TEMP"
+          mkdir -p "$TMP"
+          echo "[fetch] $URL"
+          curl -fL --retry 3 -o "$TMP/rt.zip" "$URL"
+          echo -n "sha256(zip): "
+          SHA_ACTUAL="$(sha256sum "$TMP/rt.zip" | awk '{print $1}')"
+          echo "$SHA_ACTUAL"
+          test "$SHA_EXPECT" = "$SHA_ACTUAL"
+          unzip -l "$TMP/rt.zip" | sed -n '1,20p'
+          # quick ELF magic check
+          unzip -p "$TMP/rt.zip" bin/box64 | head -c 4 | od -An -tx1 | tr -d ' \n' | grep -q '^7f454c46$'
