@@ -1,5 +1,10 @@
 # Android/Gradle
 .gradle/
+/.gradle/
+/app/build/
+/app/.cxx/
+/out/
+/scripts/runtime/runtime_staging/
 .local/
 build/
 app/build/
@@ -43,3 +48,12 @@ app/src/main/assets/runtime/**
 # ------ runtime artifacts
 /out/runtime
 /scripts/runtime/runtime_staging/**
+.gradle/
+app/build/
+app/.cxx/
+app/build/outputs/
+app/build/intermediates/
+out/
+scripts/runtime/runtime_staging/
+app/src/main/assets/runtime/**
+!app/src/main/assets/runtime/.keep
