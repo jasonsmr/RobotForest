@@ -6257,6 +6257,10 @@
     </style>
     <style name="TextAppearance.Widget.AppCompat.Toolbar.Title" parent="Base.TextAppearance.Widget.AppCompat.Toolbar.Title">
     </style>
+    <style name="Theme.App" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+    </style>
     <style name="Theme.AppCompat" parent="Base.Theme.AppCompat"/>
     <style name="Theme.AppCompat.CompactMenu" parent="Base.Theme.AppCompat.CompactMenu"/>
     <style name="Theme.AppCompat.DayNight" parent="Theme.AppCompat.Light"/>

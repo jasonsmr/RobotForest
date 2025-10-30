@@ -2,4 +2,8 @@
 <resources>
     <color name="ic_launcher_background">#202124</color>
     <string name="app_name">RobotForest</string>
+    <style name="Theme.App" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+    </style>
 </resources>

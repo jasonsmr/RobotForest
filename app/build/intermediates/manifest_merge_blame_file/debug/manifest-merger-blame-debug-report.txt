@@ -7,197 +7,133 @@
 7    <uses-sdk
 8        android:minSdkVersion="24"
 9        android:targetSdkVersion="34" />
-10    <!-- Device capabilities -->
-11    <uses-feature
-11-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:5:5-91
-12        android:name="android.hardware.vulkan.level"
-12-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:5:19-63
-13        android:required="false" />
-13-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:5:64-88
-14    <uses-feature
-14-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:6:5-79
-15        android:glEsVersion="0x00030000"
-15-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:6:19-51
-16        android:required="false" />
-16-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:6:52-76
-17    <uses-feature
-17-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:7:5-90
-18        android:name="android.hardware.touchscreen"
-18-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:7:19-62
-19        android:required="false" /> <!-- Permissions we actually surface controls for -->
-19-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:7:63-87
-20    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- MANAGE_EXTERNAL_STORAGE is gated by Settings panel; requestAllFiles opens the right screen -->
-20-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:10:5-78
-20-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:10:22-75
-21    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- External intents we may call (Termux, settings panes) -->
-21-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:12:5-15:40
-21-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:13:9-66
-22    <queries>
-22-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:18:5-26:15
-23        <package android:name="com.termux" />
-23-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:19:9-46
-23-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:19:18-43
-24
-25        <intent>
-25-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:20:9-22:18
-26            <action android:name="android.settings.MANAGE_OVERLAY_PERMISSION" />
-26-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:21:13-81
-26-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:21:21-78
-27        </intent>
-28        <intent>
-28-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:23:9-25:18
-29            <action android:name="android.settings.MANAGE_APP_ALL_FILES_ACCESS_PERMISSION" />
-29-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:24:13-94
-29-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:24:21-91
-30        </intent>
-31    </queries>
-32
-33    <permission
-33-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:22:5-24:47
-34        android:name="com.robotforest.launcher.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-34-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:23:9-81
-35        android:protectionLevel="signature" />
-35-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:24:9-44
-36
-37    <uses-permission android:name="com.robotforest.launcher.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-37-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:26:5-97
-37-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:26:22-94
+10    <!-- Normal permissions (no runtime prompt) -->
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:5:5-66
+11-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:5:22-64
+12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+12-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:6:5-78
+12-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:6:22-76
+13
+14    <permission
+14-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:22:5-24:47
+15        android:name="com.robotforest.launcher.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+15-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:23:9-81
+16        android:protectionLevel="signature" />
+16-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:24:9-44
+17
+18    <uses-permission android:name="com.robotforest.launcher.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+18-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:26:5-97
+18-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:26:22-94
+19
+20    <application
+20-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:8:5-29:19
+21        android:name="com.robotforest.launcher.RobotForestApp"
+21-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:9:9-63
+22        android:allowBackup="true"
+22-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:10:9-35
+23        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+23-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:28:18-86
+24        android:debuggable="true"
+24-->/data/data/com.termux/files/home/android/RobotForest/app/src/debug/AndroidManifest.xml:2:18-43
+25        android:extractNativeLibs="false"
+26        android:icon="@mipmap/ic_launcher"
+26-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:12:9-43
+27        android:label="@string/app_name"
+27-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:11:9-41
+28        android:roundIcon="@mipmap/ic_launcher_round"
+28-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:13:9-54
+29        android:supportsRtl="true"
+29-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:14:9-35
+30        android:theme="@style/Theme.App" > <!-- Main launcher activity -->
+30-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:15:9-41
+31        <activity
+31-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:18:9-27:20
+32            android:name="com.robotforest.launcher.MainActivity"
+32-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:19:13-41
+33            android:exported="true"
+33-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:20:13-36
+34            android:launchMode="singleTask"
+34-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:21:13-44
+35            android:screenOrientation="unspecified" >
+35-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:22:13-52
+36            <intent-filter>
+36-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:23:13-26:29
+37                <action android:name="android.intent.action.MAIN" />
+37-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:24:17-68
+37-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:24:25-66
 38
-39    <application
-39-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:28:5-61:19
-40        android:allowBackup="false"
-40-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:32:9-36
-41        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-41-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:28:18-86
-42        android:debuggable="true"
-42-->/data/data/com.termux/files/home/android/RobotForest/app/src/debug/AndroidManifest.xml:2:18-43
-43        android:extractNativeLibs="false"
-44        android:hasCode="true"
-44-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:35:9-31
-45        android:icon="@mipmap/ic_launcher"
-45-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:30:9-43
-46        android:label="RobotForest"
-46-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:29:9-36
-47        android:roundIcon="@mipmap/ic_launcher_round"
-47-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:31:9-54
-48        android:supportsRtl="true"
-48-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:33:9-35
-49        android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen" >
-49-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:34:9-82
-50        <activity
-50-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:37:9-49:20
-51            android:name="com.robotforest.launcher.MainActivity"
-51-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:38:13-65
-52            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|screenLayout|smallestScreenSize|uiMode"
-52-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:44:13-122
-53            android:exported="true"
-53-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:39:13-36
-54            android:immersive="true"
-54-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:43:13-37
-55            android:launchMode="singleTask"
-55-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:41:13-44
-56            android:resizeableActivity="false"
-56-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:42:13-47
-57            android:screenOrientation="sensorLandscape" >
-57-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:40:13-56
-58            <intent-filter>
-58-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:45:13-48:29
-59                <action android:name="android.intent.action.MAIN" />
-59-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:46:17-69
-59-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:46:25-66
-60
-61                <category android:name="android.intent.category.LAUNCHER" />
-61-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:47:17-77
-61-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:47:27-74
-62            </intent-filter>
-63        </activity> <!-- Optional NativeActivity smoke test -->
-64        <activity
-64-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:52:9-60:20
-65            android:name="android.app.NativeActivity"
-65-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:53:13-54
-66            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|screenLayout|smallestScreenSize|uiMode"
-66-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:58:13-122
-67            android:enabled="true"
-67-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:55:13-35
-68            android:exported="false"
-68-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:54:13-37
-69            android:label="Native Test"
-69-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:56:13-40
-70            android:process=":native" >
-70-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:57:13-38
-71            <meta-data
-71-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:59:13-87
-72                android:name="android.app.lib_name"
-72-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:59:24-59
-73                android:value="launcher" />
-73-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:59:60-84
-74        </activity>
-75
-76        <provider
-76-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
-77            android:name="androidx.startup.InitializationProvider"
-77-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
-78            android:authorities="com.robotforest.launcher.androidx-startup"
-78-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
-79            android:exported="false" >
-79-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
-80            <meta-data
-80-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
-81                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-81-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
-82                android:value="androidx.startup" />
-82-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
-83            <meta-data
-83-->[androidx.lifecycle:lifecycle-process:2.6.2] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/0e60bd40232541a9a51727f16f13bc02/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:29:13-31:52
-84                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-84-->[androidx.lifecycle:lifecycle-process:2.6.2] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/0e60bd40232541a9a51727f16f13bc02/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:30:17-78
-85                android:value="androidx.startup" />
-85-->[androidx.lifecycle:lifecycle-process:2.6.2] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/0e60bd40232541a9a51727f16f13bc02/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:31:17-49
-86            <meta-data
-86-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
-87                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-87-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
-88                android:value="androidx.startup" />
-88-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
-89        </provider>
-90
-91        <receiver
-91-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
-92            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-92-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
-93            android:directBootAware="false"
-93-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
-94            android:enabled="true"
-94-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
-95            android:exported="true"
-95-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
-96            android:permission="android.permission.DUMP" >
-96-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
-97            <intent-filter>
-97-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
-98                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-98-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
-98-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
-99            </intent-filter>
-100            <intent-filter>
-100-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
-101                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-101-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
-101-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
-102            </intent-filter>
-103            <intent-filter>
-103-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
-104                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-104-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
-104-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
-105            </intent-filter>
-106            <intent-filter>
-106-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
-107                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-107-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
-107-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
-108            </intent-filter>
-109        </receiver>
-110    </application>
-111
-112</manifest>
+39                <category android:name="android.intent.category.LAUNCHER" />
+39-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:25:17-76
+39-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:25:27-74
+40            </intent-filter>
+41        </activity>
+42
+43        <provider
+43-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+44            android:name="androidx.startup.InitializationProvider"
+44-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
+45            android:authorities="com.robotforest.launcher.androidx-startup"
+45-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
+46            android:exported="false" >
+46-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
+47            <meta-data
+47-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+48                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+48-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+49                android:value="androidx.startup" />
+49-->[androidx.emoji2:emoji2:1.3.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/a96b409ded905a373b4491d15844dc71/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+50            <meta-data
+50-->[androidx.lifecycle:lifecycle-process:2.6.2] /data/data/com.termux/files/home/.gradle/caches/transforms-3/0e60bd40232541a9a51727f16f13bc02/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:29:13-31:52
+51                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+51-->[androidx.lifecycle:lifecycle-process:2.6.2] /data/data/com.termux/files/home/.gradle/caches/transforms-3/0e60bd40232541a9a51727f16f13bc02/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:30:17-78
+52                android:value="androidx.startup" />
+52-->[androidx.lifecycle:lifecycle-process:2.6.2] /data/data/com.termux/files/home/.gradle/caches/transforms-3/0e60bd40232541a9a51727f16f13bc02/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:31:17-49
+53            <meta-data
+53-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+54                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+54-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+55                android:value="androidx.startup" />
+55-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+56        </provider>
+57
+58        <receiver
+58-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+59            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+59-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+60            android:directBootAware="false"
+60-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+61            android:enabled="true"
+61-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+62            android:exported="true"
+62-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+63            android:permission="android.permission.DUMP" >
+63-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+64            <intent-filter>
+64-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+65                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+65-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+65-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+66            </intent-filter>
+67            <intent-filter>
+67-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+68                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+68-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+68-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+69            </intent-filter>
+70            <intent-filter>
+70-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+71                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+71-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+71-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+72            </intent-filter>
+73            <intent-filter>
+73-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+74                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+74-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+74-->[androidx.profileinstaller:profileinstaller:1.3.1] /data/data/com.termux/files/home/.gradle/caches/transforms-3/cc0e66df3b7b986f6dcad706d99223c0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+75            </intent-filter>
+76        </receiver>
+77    </application>
+78
+79</manifest>

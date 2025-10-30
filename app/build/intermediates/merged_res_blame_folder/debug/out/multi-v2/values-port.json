@@ -4,7 +4,7 @@
             "outputFile": "com.robotforest.launcher.app-mergeDebugResources-29:/values-port/values-port.xml",
             "map": [
                 {
-                    "source": "/data/data/com.termux/files/home/.gradle-rf/caches/transforms-3/e867cb40bd7a7534f84e3af1b0c0b169/transformed/appcompat-1.7.0/res/values-port/values-port.xml",
+                    "source": "/data/data/com.termux/files/home/.gradle/caches/transforms-3/e867cb40bd7a7534f84e3af1b0c0b169/transformed/appcompat-1.7.0/res/values-port/values-port.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

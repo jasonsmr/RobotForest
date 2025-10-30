@@ -103,3 +103,26 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
 }
+// --- Keep the embedded runtime manifest fresh -------------------
+def rfManifestSrc = file("$rootDir/scripts/runtime/runtime-manifest.json")
+def rfManifestDstDir = file("$projectDir/src/main/assets/runtime")
+def rfManifestDst = file("$rfManifestDstDir/manifest.json")
+
+tasks.register("updateRuntimeAsset") {
+    doLast {
+        if (!rfManifestDstDir.exists()) rfManifestDstDir.mkdirs()
+        if (rfManifestSrc.exists()) {
+            rfManifestSrc.withInputStream { ins ->
+                rfManifestDst.withOutputStream { outs -> outs << ins }
+            }
+            println "[rf-runtime] Embedded manifest updated from packer: ${rfManifestSrc}"
+        } else {
+            println "[rf-runtime] NOTE: packer manifest missing; keeping existing asset."
+        }
+    }
+}
+
+// Ensure assets are updated before AAPT packages resources
+tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
+    dependsOn("updateRuntimeAsset")
+}
