@@ -1,59 +1,44 @@
 # Android/Gradle
-.gradle/
 /.gradle/
-/app/build/
-/app/.cxx/
-/out/
-/scripts/runtime/runtime_staging/
-.local/
-build/
-app/build/
-captures/
-.gradle/
-.externalNativeBuild/
-.cxx/
+/gradle/
+/build/
+/local.properties
 **/build/
+captures/
+.cxx/
+.externalNativeBuild/
 
 # IDE
 .idea/
 *.iml
 
-# Keystores (never commit real keys)
-*.keystore
-*.jks
-*.pem
-*.p12
+# App outputs
+app/release/
+app/debug/
+app/intermediates/
+app/outputs/
+app/build/
 
-# APK / AAB outputs
+# Our local outputs
+/out/
+/tmp/
+/tools/tmp/
+/scripts/tmp/
+
+# Archives & binaries (we upload these to Releases instead)
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.tar.xz
 *.apk
-/*.apk
-*.ap_
 *.aab
-
-# Native outputs & intermediates
 *.so
 *.o
 *.a
-*.d
-*.ll
-*.bc
 
 # Logs
 *.log
 
-# Our runtime payload is produced by CI / attached to releases, not committed
-app/src/main/assets/runtime/**
-!app/src/main/assets/runtime/.keep
-
-# ------ runtime artifacts
-/out/runtime
-/scripts/runtime/runtime_staging/**
-.gradle/
-app/build/
-app/.cxx/
-app/build/outputs/
-app/build/intermediates/
-out/
-scripts/runtime/runtime_staging/
-app/src/main/assets/runtime/**
-!app/src/main/assets/runtime/.keep
+# Don’t ignore the manifest we ship
+!scripts/runtime/runtime-manifest.json
