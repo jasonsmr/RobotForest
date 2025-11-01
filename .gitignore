@@ -22,3 +22,6 @@ logs/
 
 # Termux temp
 tmp/
+
+# Don't commit prebuilt .so — use CI or LFS if truly needed
+app/src/main/jniLibs/
