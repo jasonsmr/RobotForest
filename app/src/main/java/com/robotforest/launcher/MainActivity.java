@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.system.Os;
 import android.system.OsConstants;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -18,6 +17,7 @@ import java.io.File;
 import java.util.*;
 
 public class MainActivity extends Activity {
+    private static final String TAG = "RF.Main";
     private TextView logView;
     private File installDir;
 
@@ -35,18 +35,24 @@ public class MainActivity extends Activity {
         logView.setMovementMethod(new ScrollingMovementMethod());
         logView.setMinLines(8);
 
-        Button btnCheck = new Button(this);    btnCheck.setText("Run: box64 -v");
-        Button btnList = new Button(this);     btnList.setText("List runtime/bin");
-        Button btnFix  = new Button(this);     btnFix.setText("Fix permissions");
-        Button btnCopy = new Button(this);     btnCopy.setText("Copy log");
-        Button btnExit = new Button(this);     btnExit.setText("Exit");
-        Button btnRein = new Button(this);     btnRein.setText("Force reinstall runtime");
+        Button btnCheck64 = new Button(this); btnCheck64.setText("Run: libbox64.so -v");
+        Button btnCheck86 = new Button(this); btnCheck86.setText("Run: libbox86.so -v");
+        Button btnWv = new Button(this);      btnWv.setText("wine64 --version");
+        Button btnCfg = new Button(this);     btnCfg.setText("winecfg (WoW64)");
+        Button btnSteam = new Button(this);   btnSteam.setText("Steam (Windows)");
+        Button btnList = new Button(this);    btnList.setText("List runtime/bin");
+        Button btnFix  = new Button(this);    btnFix.setText("Fix permissions");
+        Button btnCopy = new Button(this);    btnCopy.setText("Copy log");
+        Button btnExit = new Button(this);    btnExit.setText("Exit");
+        Button btnRein = new Button(this);    btnRein.setText("Force reinstall runtime");
 
         ScrollView scroller = new ScrollView(this); scroller.addView(logView);
         root.addView(scroller, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
-        root.addView(btnCheck); root.addView(btnList); root.addView(btnFix);
-        root.addView(btnCopy);  root.addView(btnExit); root.addView(btnRein);
+        root.addView(btnCheck64); root.addView(btnCheck86);
+        root.addView(btnWv); root.addView(btnCfg); root.addView(btnSteam);
+        root.addView(btnList); root.addView(btnFix);
+        root.addView(btnCopy); root.addView(btnExit); root.addView(btnRein);
 
         setContentView(root);
 
@@ -54,6 +60,8 @@ public class MainActivity extends Activity {
             @Override public void onReady(File dir) {
                 installDir = dir;
                 append("[ready] " + dir.getAbsolutePath());
+                String n = Exec.nativeBox64Path();
+                if (n != null) append("[pref] nativeLibraryDir/libbox64.so -> " + n);
             }
             @Override public void onProgress(String msg) { append(msg); }
             @Override public void onError(Exception e) { append("[error] " + e.getMessage()); }
@@ -77,37 +85,70 @@ public class MainActivity extends Activity {
         btnFix.setOnClickListener(v -> {
             if (installDir == null) { append("[warn] runtime not ready yet"); return; }
             try {
-                // Fix dirs 0755 and bin/* 0755
                 walkChmod(installDir, true);
                 File bin = new File(installDir, "bin");
                 File[] xs = bin.listFiles();
                 if (xs != null) for (File f : xs) try { Os.chmod(f.getAbsolutePath(), 0755); } catch (Throwable ignore) {}
                 append("[fix] permissions updated");
+                String n = Exec.nativeBox64Path();
+                if (n != null) append("[pref] nativeLibraryDir/libbox64.so -> " + n);
             } catch (Throwable t) {
                 append("[fix error] " + t);
             }
         });
 
-        btnCheck.setOnClickListener(v -> {
+        btnCheck64.setOnClickListener(v -> {
             if (installDir == null) { append("[warn] runtime not ready yet"); return; }
-            File bin = new File(installDir, "bin");
-            File box64 = new File(bin, "box64");
-            append(diag(box64));
-            if (!box64.isFile()) { append("[error] bin/box64 not found"); return; }
-
-            // Env: prepend runtime/bin
-            Map<String,String> env = new HashMap<>();
-            env.put("PATH", bin.getAbsolutePath() + ":" + System.getenv("PATH"));
-
-            append("$ box64 -v");
-            Exec.runAsync(Arrays.asList(box64.getAbsolutePath(), "-v"), installDir, env,
+            String prefer = Exec.nativeBox64Path();
+            if (prefer == null) { append("[error] libbox64.so not visible"); return; }
+            append("$ libbox64.so -v");
+            Exec.runAsync(Arrays.asList(prefer, "-v"), installDir, withPath(new File(installDir,"bin")),
                     new Exec.Callback() {
-                        @Override public void onCompleted(int code, String out, String err) {
-                            append("[exit " + code + "]\n" + trimBoth(out, err));
-                        }
-                        @Override public void onError(Exception e) {
-                            append("[exec error] " + e);
-                        }
+                        @Override public void onCompleted(int code, String out, String err) { append("[exit " + code + "]\n" + trimBoth(out, err)); }
+                        @Override public void onError(Exception e) { append("[exec error] " + e); }
+                    });
+        });
+
+        btnCheck86.setOnClickListener(v -> {
+            if (installDir == null) { append("[warn] runtime not ready yet"); return; }
+            append("$ box86 -v");
+            Exec.runAsync(Arrays.asList("box86", "-v"), installDir, withPath(new File(installDir,"bin")),
+                    new Exec.Callback() {
+                        @Override public void onCompleted(int code, String out, String err) { append("[exit " + code + "]\n" + trimBoth(out, err)); }
+                        @Override public void onError(Exception e) { append("[exec error] " + e); }
+                    });
+        });
+
+        btnWv.setOnClickListener(v -> {
+            if (installDir == null) { append("[warn] runtime not ready yet"); return; }
+            File wine64 = new File(new File(installDir,"bin"), "wine64.sh");
+            append("$ wine64.sh --version");
+            Exec.runAsync(Arrays.asList(wine64.getAbsolutePath(), "--version"), installDir, withPath(new File(installDir,"bin")),
+                    new Exec.Callback() {
+                        @Override public void onCompleted(int code, String out, String err) { append("[exit " + code + "]\n" + trimBoth(out, err)); }
+                        @Override public void onError(Exception e) { append("[exec error] " + e); }
+                    });
+        });
+
+        btnCfg.setOnClickListener(v -> {
+            if (installDir == null) { append("[warn] runtime not ready yet"); return; }
+            File wine64 = new File(new File(installDir,"bin"), "wine64.sh");
+            append("$ wine64.sh winecfg");
+            Exec.runAsync(Arrays.asList(wine64.getAbsolutePath(), "winecfg"), installDir, withPath(new File(installDir,"bin")),
+                    new Exec.Callback() {
+                        @Override public void onCompleted(int code, String out, String err) { append("[exit " + code + "]\n" + trimBoth(out, err)); }
+                        @Override public void onError(Exception e) { append("[exec error] " + e); }
+                    });
+        });
+
+        btnSteam.setOnClickListener(v -> {
+            if (installDir == null) { append("[warn] runtime not ready yet"); return; }
+            File steam = new File(new File(installDir,"bin"), "steam-win.sh");
+            append("$ steam-win.sh");
+            Exec.runAsync(Arrays.asList(steam.getAbsolutePath()), installDir, withPath(new File(installDir,"bin")),
+                    new Exec.Callback() {
+                        @Override public void onCompleted(int code, String out, String err) { append("[exit " + code + "]\n" + trimBoth(out, err)); }
+                        @Override public void onError(Exception e) { append("[exec error] " + e); }
                     });
         });
 
@@ -127,6 +168,13 @@ public class MainActivity extends Activity {
                 @Override public void onError(Exception e) { append("[error] " + e.getMessage()); }
             });
         });
+    }
+
+    private Map<String,String> withPath(File bin) {
+        Map<String,String> env = new HashMap<>();
+        String cur = System.getenv("PATH");
+        env.put("PATH", bin.getAbsolutePath() + (cur!=null?":"+cur:""));
+        return env;
     }
 
     private String diag(File f) {

@@ -3,105 +3,112 @@ plugins {
 }
 
 android {
-    namespace 'com.example.skyrimlauncher'
+    namespace "com.robotforest.launcher"
     compileSdk 34
-        // If you want to pin an NDK version (optional). Comment out if you prefer “latest”.
     ndkVersion "27.1.12297006"
 
     defaultConfig {
-        applicationId "com.example.skyrimlauncher"
-        minSdk 28
+        applicationId "com.robotforest.launcher"
+        minSdk 24
         targetSdk 34
         versionCode 1
-        versionName "1.0"
+        versionName "0.1-prealpha"
+        buildToolsVersion "34.0.4"
 
-        // CMake/Ndk config for arm64 only (Z Fold 4 / Snapdragon 8 Gen1)
-        ndk {
-            abiFilters "arm64-v8a"
+        ndk { abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64" }
+
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_STL=c++_static"
+                cFlags "-O2"
+                cppFlags "-std=c++17 -O2"
+                version "3.30.5"
+            }
         }
-	// Point Gradle to your CMakeLists
-	//externalNativeBuild {
-        //    cmake {
-	//    path file("src/main/cpp/CMakeLists.txt")
-	    // version "3.30.5" 
-	    // uncomment if you need to force a specific one.
-	//    cppFlags ""
-	    // Force aarch64 host tools inside the NDK.
-	//    arguments "-DANDROID_NDK_HOST_TAG=linux-aarch64"
-	    // Use the CMake bundled by the SDK; version number can be omitted.
-	//    path file("src/main/cpp/CMakeLists.txt")
-	    // version "3.30.5" // uncomment if you need to force a specific one.
-	//    }
-	//}
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    signingConfigs {
+        release {
+            def debugKs = new File(System.getProperty("user.home"), ".android/debug.keystore")
+            def props = new Properties()
+            def propsFile = rootProject.file("gradle.properties")
+            if (propsFile.exists()) props.load(new FileInputStream(propsFile))
+            def relFile = props.getProperty("RELEASE_STORE_FILE") ?: ""
+            def relPass = props.getProperty("RELEASE_STORE_PASSWORD") ?: ""
+            def relAlias = props.getProperty("RELEASE_KEY_ALIAS") ?: ""
+            def relKeyPw = props.getProperty("RELEASE_KEY_PASSWORD") ?: ""
+            if (relFile && file(relFile).exists()) {
+                storeFile file(relFile)
+                storePassword relPass
+                keyAlias relAlias
+                keyPassword relKeyPw
+            } else {
+                storeFile debugKs
+                storePassword "android"
+                keyAlias "androiddebugkey"
+                keyPassword "android"
+            }
+        }
     }
 
     buildTypes {
-        debug {
-            // Old name 'isMinifyEnabled' -> correct is 'minifyEnabled'
-            minifyEnabled false
-            shrinkResources false
-            debuggable true
-        }
+        debug  { signingConfig signingConfigs.release }
         release {
-            // Start without shrinking until you’ve sorted native symbols/proguard rules
             minifyEnabled false
             shrinkResources false
+            signingConfig signingConfigs.release
         }
     }
 
-    // If you want to pin an NDK version (optional). Comment out if you prefer “latest”.
-    // ndkVersion "27.1.12297006"
+    externalNativeBuild {
+        cmake {
+            path file("src/main/cpp/CMakeLists.txt")
+            version "3.30.5"
+        }
+    }
 
-    // Point Gradle to your CMakeLists
-        externalNativeBuild {
+    buildFeatures { viewBinding true }
 
-            cmake {
-	    path file("src/main/cpp/CMakeLists.txt")
-	    // version "3.30.5"
-	    // uncomment if you need to force a specific one.
-	    cppFlags ""
-	    // Force aarch64 host tools inside the NDK.
-	    arguments "-DANDROID_NDK_HOST_TAG=linux-aarch64"
-	    // Use the CMake bundled by the SDK; version number can be omitted.
-	    path file("src/main/cpp/CMakeLists.txt")
-	    // version "3.30.5" // uncomment if you need to force a specific one.
-	    }
-	}
-
-    // AGP 8: packagingOptions -> packaging
     packaging {
-        // Keep legacy jni packaging so native libs land under lib/ properly on older devices
         jniLibs {
             useLegacyPackaging true
         }
-        // If you start shipping shaders/assets with duplicate names, you can add pickFirsts here.
-        // resources {
-        //     pickFirsts += ["META-INF/*"]
-        // }
+        resources {
+            excludes += ["META-INF/LICENSE*", "META-INF/NOTICE*"]
+        }
     }
 
-    // Keep builds smooth in Termux
     lint {
-        abortOnError false
-    }
-
-    buildFeatures {
-        // We’re not using Compose/View binding here
-        buildConfig true
-        prefab false
-        aidl false
-        renderScript false
-        shaders true
-    }
-
-    // Java 17 is required by AGP 8.x
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        checkReleaseBuilds true
+        warningsAsErrors false
     }
 }
 
 dependencies {
-    // No Java/Kotlin deps required for pure NativeActivity.
-    // Add AndroidX/etc. here if/when you introduce Java UI.
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+}
+
+// --- Keep the embedded runtime manifest fresh (from scripts/runtime/runtime-manifest.json) ---
+def rfManifestSrc    = file("$rootDir/scripts/runtime/runtime-manifest.json")
+def rfManifestDstDir = file("$projectDir/src/main/assets/runtime")
+def rfManifestDst    = file("$rfManifestDstDir/manifest.json")
+
+tasks.register("updateRuntimeAsset") {
+    doLast {
+        if (!rfManifestDstDir.exists()) rfManifestDstDir.mkdirs()
+        if (rfManifestSrc.exists()) {
+            rfManifestSrc.withInputStream { ins ->
+                rfManifestDst.withOutputStream { outs -> outs << ins }
+            }
+            println "[rf-runtime] Embedded manifest updated from packer: ${rfManifestSrc}"
+        } else {
+            println "[rf-runtime] NOTE: packer manifest missing; keeping existing asset."
+        }
+    }
+}
+
+tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
+    dependsOn("updateRuntimeAsset")
 }

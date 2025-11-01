@@ -1,0 +1,182 @@
+package com.robotforest.launcher;
+
+import android.os.Handler;
+import android.os.Looper;
+
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
+
+
+    
+    public final class Exec {
+
+    
+    private static java.io.File preferNativeLibDir(android.content.Context ctx, String toolName) {
+
+    
+        // Accept either "box64" or an absolute path ending with "/box64",
+
+    
+        // and map it to the packaged nativeLibraryDir copy: libbox64.so
+
+    
+        boolean isBox64 = false;
+
+    
+        try {
+
+    
+            if ("box64".equals(toolName) || toolName.endsWith("/box64") || "libbox64.so".equals(toolName)) {
+
+    
+                isBox64 = true;
+
+    
+            }
+
+    
+        } catch (Throwable ignored) {}
+
+    
+        if (!isBox64) return null;
+
+    
+        try {
+
+    
+            String nld = ctx.getApplicationInfo().nativeLibraryDir;
+
+    
+            if (nld != null) {
+
+    
+                java.io.File f = new java.io.File(nld, "libbox64.so");
+
+    
+                if (f.exists() && f.isFile()) {
+
+    
+                    try { if (!f.canExecute()) f.setExecutable(true, false); } catch (Throwable ignored) {}
+
+    
+                    if (f.canExecute()) return f;
+
+    
+                }
+
+    
+            }
+
+    
+        } catch (Throwable ignored) {}
+
+    
+        return null;
+
+    
+    }
+
+
+  
+
+    
+    private static java.io.File preferNativeLibDir(android.content.Context ctx, String toolName) {
+
+    
+        // If caller asked for "box64", prefer a lib-style filename so PM extracts it
+
+    
+        String candidate = toolName;
+
+    
+        if ("box64".equals(toolName)) candidate = "libbox64.so";
+
+    
+        try {
+
+    
+            String nld = ctx.getApplicationInfo().nativeLibraryDir;
+
+    
+            if (nld != null) {
+
+    
+                java.io.File f = new java.io.File(nld, candidate);
+
+    
+                if (f.exists() && f.isFile()) {
+
+    
+                    try { if (!f.canExecute()) f.setExecutable(true, false); } catch (Throwable ignored) {}
+
+    
+                    if (f.canExecute()) return f;
+
+    
+                }
+
+    
+            }
+
+    
+        } catch (Throwable ignored) {}
+
+    
+        return null;
+
+    
+    }
+
+
+  
+    public interface Callback {
+        void onCompleted(int exitCode, String stdout, String stderr);
+        void onError(Exception e);
+    }
+
+    private static final ExecutorService EXEC = Executors.newCachedThreadPool();
+    private static final Handler MAIN = new Handler(Looper.getMainLooper());
+
+    public static void runAsync(
+            List<String> cmd,
+            File workDir,
+            Map<String, String> extraEnv,
+            Callback cb
+    ) {
+        EXEC.submit(() -> {
+            Process p = null;
+            try {
+                ProcessBuilder pb = new ProcessBuilder(cmd);
+                if (workDir != null) pb.directory(workDir);
+                pb.redirectErrorStream(false);
+                Map<String, String> env = pb.environment();
+                if (extraEnv != null) env.putAll(extraEnv);
+                p = pb.start();
+
+                String stdout = slurp(p.getInputStream());
+                String stderr = slurp(p.getErrorStream());
+                int code = p.waitFor();
+
+                final int fcode = code;
+                final String fOut = stdout;
+                final String fErr = stderr;
+                MAIN.post(() -> cb.onCompleted(fcode, fOut, fErr));
+            } catch (Exception e) {
+                MAIN.post(() -> cb.onError(e));
+            } finally {
+                if (p != null) p.destroy();
+            }
+        });
+    }
+
+    private static String slurp(InputStream in) throws IOException {
+        try (BufferedInputStream bin = new BufferedInputStream(in);
+             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            byte[] buf = new byte[8192];
+            int n;
+            while ((n = bin.read(buf)) >= 0) bos.write(buf, 0, n);
+            return bos.toString("UTF-8");
+        }
+    }
+}

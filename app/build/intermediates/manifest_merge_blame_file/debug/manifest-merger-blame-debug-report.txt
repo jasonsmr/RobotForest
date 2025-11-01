@@ -36,7 +36,7 @@
 23-->[androidx.core:core:1.13.0] /data/data/com.termux/files/home/.gradle/caches/transforms-3/404564ffa6341b226a5fefc3396f7811/transformed/core-1.13.0/AndroidManifest.xml:28:18-86
 24        android:debuggable="true"
 24-->/data/data/com.termux/files/home/android/RobotForest/app/src/debug/AndroidManifest.xml:2:18-43
-25        android:extractNativeLibs="false"
+25        android:extractNativeLibs="true"
 26        android:icon="@mipmap/ic_launcher"
 26-->/data/data/com.termux/files/home/android/RobotForest/app/src/main/AndroidManifest.xml:12:9-43
 27        android:label="@string/app_name"

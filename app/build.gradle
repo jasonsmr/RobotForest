@@ -8,46 +8,36 @@ android {
     ndkVersion "27.1.12297006"
 
     defaultConfig {
-        ndk { abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64" }
-
         applicationId "com.robotforest.launcher"
         minSdk 24
         targetSdk 34
         versionCode 1
         versionName "0.1-prealpha"
-	buildToolsVersion "34.0.4"
+        buildToolsVersion "34.0.4"
 
-        // Native bits
+        ndk { abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64" }
+
         externalNativeBuild {
             cmake {
                 arguments "-DANDROID_STL=c++_static"
                 cFlags "-O2"
                 cppFlags "-std=c++17 -O2"
-		version "3.30.5"
+                version "3.30.5"
             }
         }
-
-        // For file pickers and persisted URI perms
         vectorDrawables.useSupportLibrary = true
     }
 
-    // ---- RobotForest signing rule (DO NOT REMOVE) ----
-    // Use RELEASE_* from gradle.properties if present and file exists;
-    // otherwise fall back to standard debug keystore (~/.android/debug.keystore).
     signingConfigs {
         release {
             def debugKs = new File(System.getProperty("user.home"), ".android/debug.keystore")
-
             def props = new Properties()
             def propsFile = rootProject.file("gradle.properties")
-            if (propsFile.exists()) {
-                props.load(new FileInputStream(propsFile))
-            }
+            if (propsFile.exists()) props.load(new FileInputStream(propsFile))
             def relFile = props.getProperty("RELEASE_STORE_FILE") ?: ""
             def relPass = props.getProperty("RELEASE_STORE_PASSWORD") ?: ""
             def relAlias = props.getProperty("RELEASE_KEY_ALIAS") ?: ""
             def relKeyPw = props.getProperty("RELEASE_KEY_PASSWORD") ?: ""
-
             if (relFile && file(relFile).exists()) {
                 storeFile file(relFile)
                 storePassword relPass
@@ -63,9 +53,7 @@ android {
     }
 
     buildTypes {
-        debug {
-            signingConfig signingConfigs.release
-        }
+        debug  { signingConfig signingConfigs.release }
         release {
             minifyEnabled false
             shrinkResources false
@@ -73,26 +61,24 @@ android {
         }
     }
 
-    // CMake: path only (no explicit version)
     externalNativeBuild {
         cmake {
             path file("src/main/cpp/CMakeLists.txt")
-	    version "3.30.5"
+            version "3.30.5"
         }
     }
 
-    buildFeatures {
-        viewBinding true
-    }
+    buildFeatures { viewBinding true }
 
-    // AGP 8 style (older packagingOptions also worked, but this is future-proof)
     packaging {
+        jniLibs {
+            useLegacyPackaging true
+        }
         resources {
             excludes += ["META-INF/LICENSE*", "META-INF/NOTICE*"]
         }
     }
 
-    // Preserve legacy external storage behavior for picker lanes (we still request SAF/All files properly)
     lint {
         checkReleaseBuilds true
         warningsAsErrors false
@@ -103,10 +89,11 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
 }
-// --- Keep the embedded runtime manifest fresh -------------------
-def rfManifestSrc = file("$rootDir/scripts/runtime/runtime-manifest.json")
+
+// --- Keep the embedded runtime manifest fresh (from scripts/runtime/runtime-manifest.json) ---
+def rfManifestSrc    = file("$rootDir/scripts/runtime/runtime-manifest.json")
 def rfManifestDstDir = file("$projectDir/src/main/assets/runtime")
-def rfManifestDst = file("$rfManifestDstDir/manifest.json")
+def rfManifestDst    = file("$rfManifestDstDir/manifest.json")
 
 tasks.register("updateRuntimeAsset") {
     doLast {
@@ -122,7 +109,6 @@ tasks.register("updateRuntimeAsset") {
     }
 }
 
-// Ensure assets are updated before AAPT packages resources
 tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
     dependsOn("updateRuntimeAsset")
 }

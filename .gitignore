@@ -1,44 +1,24 @@
 # Android/Gradle
-/.gradle/
-/gradle/
-/build/
-/local.properties
-**/build/
-captures/
-.cxx/
-.externalNativeBuild/
-
-# IDE
-.idea/
+.gradle/
+.local/
 *.iml
-
-# App outputs
-app/release/
-app/debug/
-app/intermediates/
-app/outputs/
+.idea/
+captures/
 app/build/
+**/.cxx/
+**/build/
 
-# Our local outputs
-/out/
-/tmp/
-/tools/tmp/
-/scripts/tmp/
-
-# Archives & binaries (we upload these to Releases instead)
-*.zip
-*.tar
-*.tar.gz
-*.tgz
-*.tar.xz
-*.apk
-*.aab
-*.so
-*.o
-*.a
+# SDK/NDK local config (keep local only)
+local.properties
 
 # Logs
 *.log
+logs/
 
-# Don’t ignore the manifest we ship
-!scripts/runtime/runtime-manifest.json
+# Artifacts
+*.apk
+*.aab
+*.obb
+
+# Termux temp
+tmp/
