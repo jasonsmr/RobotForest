@@ -1,0 +1,4 @@
+[submodule "scripts/robotforest-wow64-runtime"]
+	path = scripts/robotforest-wow64-runtime
+	url = git@github.com:jasonsmr/robotforest-wow64-runtime.git
+	branch = main
