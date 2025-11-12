@@ -1,6 +1,4 @@
-plugins {
-    id 'com.android.application'
-}
+plugins { id 'com.android.application' }
 
 android {
     namespace "com.robotforest.launcher"
@@ -14,9 +12,7 @@ android {
         versionCode 1
         versionName "0.1-prealpha"
         buildToolsVersion "34.0.4"
-
         ndk { abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64" }
-
         externalNativeBuild {
             cmake {
                 arguments "-DANDROID_STL=c++_static"
@@ -71,12 +67,8 @@ android {
     buildFeatures { viewBinding true }
 
     packaging {
-        jniLibs {
-            useLegacyPackaging true
-        }
-        resources {
-            excludes += ["META-INF/LICENSE*", "META-INF/NOTICE*"]
-        }
+        jniLibs { useLegacyPackaging true }
+        resources { excludes += ["META-INF/LICENSE*", "META-INF/NOTICE*"] }
     }
 
     lint {
@@ -90,9 +82,57 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
 }
 
-// --- Keep the embedded runtime manifest fresh (from scripts/runtime/runtime-manifest.json) ---
-def rfManifestSrc    = file("$rootDir/scripts/runtime/runtime-manifest.json")
-def rfManifestDstDir = file("$projectDir/src/main/assets/runtime")
+/** ---------------------------------------------------------------
+ * RobotForest runtime staging (external repo + submodule; pick newest)
+ * --------------------------------------------------------------- */
+
+// paths
+def rfRuntimeSubmodule = file("$rootDir/scripts/robotforest-wow64-runtime")
+def rfSubmoduleDist    = file("$rfRuntimeSubmodule/dist")
+def rfExternalDistEnv  = System.getenv("RF_RUNTIME_DIST")
+def rfExternalDist     = rfExternalDistEnv ? file(rfExternalDistEnv)
+        : file(new File(System.getProperty("user.home"), "android/robotforest-wow64-runtime/dist").absolutePath)
+def rfAssetsDir        = file("$projectDir/src/main/assets/runtime")
+
+// helper: newest zip from dir (or null)
+def newestZip = { File dir ->
+    if (dir == null || !dir.exists()) return null
+    def z = dir.listFiles({ _, n -> n.toLowerCase().endsWith(".zip") } as FilenameFilter)
+    if (!z || z.length == 0) return null
+    z.sort { a, b -> b.lastModified() <=> a.lastModified() }
+    return z[0]
+}
+
+// 1) Stage newest runtime zip from either external or submodule
+tasks.register("stageRuntimeZip") {
+    doLast {
+        if (!rfAssetsDir.exists()) rfAssetsDir.mkdirs()
+
+        def a = newestZip(rfExternalDist)
+        def b = newestZip(rfSubmoduleDist)
+        def pick = null
+        if (a && b) { pick = (a.lastModified() >= b.lastModified()) ? a : b }
+        else if (a) { pick = a }
+        else if (b) { pick = b }
+
+        if (!pick) {
+            println "[rf-runtime] No runtime zip found in: ${rfExternalDist} or ${rfSubmoduleDist}"
+            println "[rf-runtime] Build it with: ~/android/robotforest-wow64-runtime/scripts/rf_pack_runtime.sh"
+            return
+        }
+
+        copy {
+            from pick
+            into rfAssetsDir
+            rename { "rf-runtime.zip" }
+        }
+        println "[rf-runtime] Staged ${pick.name} (mtime=${new Date(pick.lastModified())}) -> assets/runtime/rf-runtime.zip"
+    }
+}
+
+// 2) Keep manifest fresh from submodule
+def rfManifestSrc    = file("$rfRuntimeSubmodule/scripts/runtime-manifest.json")
+def rfManifestDstDir = rfAssetsDir
 def rfManifestDst    = file("$rfManifestDstDir/manifest.json")
 
 tasks.register("updateRuntimeAsset") {
@@ -102,13 +142,32 @@ tasks.register("updateRuntimeAsset") {
             rfManifestSrc.withInputStream { ins ->
                 rfManifestDst.withOutputStream { outs -> outs << ins }
             }
-            println "[rf-runtime] Embedded manifest updated from packer: ${rfManifestSrc}"
+            println "[rf-runtime] Embedded manifest updated from submodule: ${rfManifestSrc}"
         } else {
-            println "[rf-runtime] NOTE: packer manifest missing; keeping existing asset."
+            println "[rf-runtime] NOTE: manifest not found in submodule; keeping existing asset."
         }
     }
 }
 
+// Run both before any assets merge
 tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
+    dependsOn("stageRuntimeZip")
     dependsOn("updateRuntimeAsset")
+}
+/**
+ * Skip staging from submodule if a pre-fetched runtime already exists.
+ * This prevents overwriting rf-runtime.zip that fetch_runtime_release.sh downloaded.
+ */
+afterEvaluate {
+  def rfZip = file("$projectDir/src/main/assets/runtime/rf-runtime.zip")
+  tasks.matching { it.name == "stageRuntimeZip" }.all { t ->
+    t.onlyIf {
+      if (rfZip.exists()) {
+        logger.lifecycle("[rf-runtime] Pre-fetched rf-runtime.zip detected; skipping submodule staging")
+        false
+      } else {
+        true
+      }
+    }
+  }
 }
