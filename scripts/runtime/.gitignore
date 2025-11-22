@@ -1,0 +1,4 @@
+# Ignore the large runtime archive by default
+*
+!.gitignore
+!rf_sync_runtime_local.sh
