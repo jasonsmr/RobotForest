@@ -16,21 +16,11 @@ jobs:
       - name: Checkout RobotForest repo
         uses: actions/checkout@v4
 
-      - name: Ensure jq and gh are available
+      - name: Install jq
         run: |
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y jq
-          if ! command -v gh >/dev/null 2>&1; then
-            echo "[rf-sync] Installing GitHub CLI..."
-            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-              | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-            sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-              | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
-            sudo apt-get update
-            sudo apt-get install -y gh
-          fi
 
       - name: Sync rf-runtime-dev.tar.zst from runtime repo
         env:
@@ -38,8 +28,10 @@ jobs:
         run: |
           set -euo pipefail
           cd "$GITHUB_WORKSPACE"
-          # Optional: allow overriding branch via workflow input
+
+          # Allow overriding RUNTIME_BRANCH from workflow input
           if [ -n "${{ github.event.inputs.branch }}" ]; then
-            export BRANCH="${{ github.event.inputs.branch }}"
+            export RUNTIME_BRANCH="${{ github.event.inputs.branch }}"
           fi
-        ./scripts/runtime/rf_sync_runtime_local.sh1
+
+          ./scripts/runtime/rf_sync_runtime_local.sh
