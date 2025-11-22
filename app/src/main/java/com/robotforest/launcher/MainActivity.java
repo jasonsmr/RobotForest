@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.*;
+import com.robotforest.launcher.RfRuntimeInstaller;
 
 public class MainActivity extends Activity {
     private TextView logView;
@@ -50,14 +51,17 @@ public class MainActivity extends Activity {
 
         setContentView(root);
 
-        RuntimeInstaller.ensureInstalled(this, new RuntimeInstaller.Listener() {
-            @Override public void onReady(File dir) {
+        // Kick off RF runtime install/verify using new rf-runtime-dev bundle
+        new Thread(() -> {
+            append("[runtime] checking/installing rf_runtime…");
+            try {
+                File dir = RfRuntimeInstaller.ensureInstalled(MainActivity.this);
                 installDir = dir;
-                append("[ready] " + dir.getAbsolutePath());
+                append("[runtime] ready at: " + dir.getAbsolutePath());
+            } catch (Exception e) {
+                append("[runtime ERROR] " + e.toString());
             }
-            @Override public void onProgress(String msg) { append(msg); }
-            @Override public void onError(Exception e) { append("[error] " + e.getMessage()); }
-        });
+        }).start();
 
         btnList.setOnClickListener(v -> {
             if (installDir == null) { append("[warn] runtime not ready yet"); return; }
