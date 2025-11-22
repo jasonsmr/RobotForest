@@ -34,4 +34,4 @@ jobs:
             export RUNTIME_BRANCH="${{ github.event.inputs.branch }}"
           fi
 
-          ./scripts/runtime/rf_sync_runtime_local.sh
+          ./scripts/runtime/rf_sync_runtime_ci.sh
