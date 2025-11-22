@@ -1,0 +1,3 @@
+# Keep assets directory in Git, but ignore all payloads
+*
+!.gitignore
