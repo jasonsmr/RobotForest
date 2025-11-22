@@ -3,35 +3,29 @@ name: RF Runtime Sync
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: "Runtime repo branch to pull from"
+      runtime-branch:
+        description: 'Branch in robotforest-wow64-runtime to pull rf-runtime-dev from'
         required: false
-        default: "ci/termux-safe-runtime"
+        default: 'ci/termux-safe-runtime'
 
 jobs:
   sync-runtime:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout RobotForest repo
+      - name: Checkout RobotForest
         uses: actions/checkout@v4
 
       - name: Install jq
         run: |
-          set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y jq
 
       - name: Sync rf-runtime-dev.tar.zst from runtime repo
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUNTIME_BRANCH: ${{ inputs.runtime-branch }}
         run: |
           set -euo pipefail
           cd "$GITHUB_WORKSPACE"
-
-          # Allow overriding RUNTIME_BRANCH from workflow input
-          if [ -n "${{ github.event.inputs.branch }}" ]; then
-            export RUNTIME_BRANCH="${{ github.event.inputs.branch }}"
-          fi
-
-          ./scripts/runtime/rf_sync_runtime_local.sh
+          ./scripts/runtime/rf_sync_runtime_ci.sh
