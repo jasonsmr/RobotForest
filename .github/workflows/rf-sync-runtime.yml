@@ -2,37 +2,36 @@ name: RF Runtime Sync
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 */6 * * *"   # every 6 hours auto-sync
+    inputs:
+      branch:
+        description: "Runtime repo branch to pull from"
+        required: false
+        default: "ci/termux-safe-runtime"
 
 jobs:
   sync-runtime:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout RobotForest
+      - name: Checkout RobotForest repo
         uses: actions/checkout@v4
 
-      - name: Install gh + jq
+      - name: Install jq
         run: |
+          set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y jq
-          sudo snap install gh
 
-      - name: Configure GitHub CLI auth
+      - name: Sync rf-runtime-dev.tar.zst from runtime repo
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh auth setup-git
-          echo "machine github.com login x-oauth-basic password $GH_TOKEN" > ~/.netrc
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
 
-      - name: Run local sync helper in CI
-        run: |
-          chmod +x scripts/runtime/rf_sync_runtime_local.sh
-          scripts/runtime/rf_sync_runtime_local.sh
+          # Allow overriding RUNTIME_BRANCH from workflow input
+          if [ -n "${{ github.event.inputs.branch }}" ]; then
+            export RUNTIME_BRANCH="${{ github.event.inputs.branch }}"
+          fi
 
-      - name: Upload runtime artifact for APK build
-        uses: actions/upload-artifact@v4
-        with:
-          name: rf-runtime-dev
-          path: scripts/runtime/rf-runtime-dev.tar.zst
+          ./scripts/runtime/rf_sync_runtime_local.sh
