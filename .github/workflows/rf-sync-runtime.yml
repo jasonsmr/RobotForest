@@ -2,37 +2,28 @@ name: RF Runtime Sync
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 */6 * * *"   # every 6 hours auto-sync
 
 jobs:
   sync-runtime:
     runs-on: ubuntu-latest
 
+    env:
+      # GitHub CLI will pick this up automatically
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
-      - name: Checkout RobotForest
+      - name: Checkout RobotForest repo
         uses: actions/checkout@v4
 
-      - name: Install gh + jq
+      - name: Install tools (jq)
         run: |
           sudo apt-get update
           sudo apt-get install -y jq
-          sudo snap install gh
 
-      - name: Configure GitHub CLI auth
+      - name: Sync rf-runtime-dev from runtime repo
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Default runtime repo; script can override via env/flags if needed
+          RUNTIME_REPO: jasonsmr/robotforest-wow64-runtime
         run: |
-          gh auth setup-git
-          echo "machine github.com login x-oauth-basic password $GH_TOKEN" > ~/.netrc
-
-      - name: Run local sync helper in CI
-        run: |
-          chmod +x scripts/runtime/rf_sync_runtime_local.sh
+          set -euo pipefail
           scripts/runtime/rf_sync_runtime_local.sh
-
-      - name: Upload runtime artifact for APK build
-        uses: actions/upload-artifact@v4
-        with:
-          name: rf-runtime-dev
-          path: scripts/runtime/rf-runtime-dev.tar.zst
