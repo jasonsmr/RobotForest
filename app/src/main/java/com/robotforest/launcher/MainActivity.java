@@ -110,10 +110,17 @@ public class MainActivity extends Activity {
                             append("[exit " + code + "]\n" + trimBoth(out, err));
                         }
                         @Override public void onError(Exception e) {
-                            append("[exec error] " + e);
-                        }
-                    });
-        });
+			String msg = e.toString();
+			append("[exec error] " + msg);
+
+			if (msg.contains("error=13")) {
+				append("[note] Permission denied when trying to execute box64.");
+				append("[note] This is expected on many modern Android devices (SELinux/noexec).");
+				append("[note] Runtime files are installed, but the APK cannot execute them directly.");
+			}
+			}
+		    });
+	});
 
         btnCopy.setOnClickListener(v -> {
             ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
