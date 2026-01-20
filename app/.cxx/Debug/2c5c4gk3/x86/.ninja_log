@@ -1,5 +1,0 @@
-# ninja log v6
-3	160	1763839239576973722	CMakeFiles/launcher.dir/main_android.c.o	5b17844a50f81b50
-2	225	1763839239576973722	CMakeFiles/native_app_glue.dir/data/data/com.termux/files/home/opt/android-sdk/ndk/27.1.12297006/sources/android/native_app_glue/android_native_app_glue.c.o	f8cc85d33abd7f33
-225	287	1763839239800973722	libnative_app_glue.a	54151c04998a2499
-287	352	1763839239860973722	/data/data/com.termux/files/home/android/RobotForest/app/build/intermediates/cxx/Debug/2c5c4gk3/obj/x86/liblauncher.so	647d1ffa7ad923a0
