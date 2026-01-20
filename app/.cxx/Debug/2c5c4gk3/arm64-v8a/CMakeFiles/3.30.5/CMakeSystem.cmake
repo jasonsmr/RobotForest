@@ -1,6 +1,6 @@
-set(CMAKE_HOST_SYSTEM "Android-35")
+set(CMAKE_HOST_SYSTEM "Android-36")
 set(CMAKE_HOST_SYSTEM_NAME "Android")
-set(CMAKE_HOST_SYSTEM_VERSION "35")
+set(CMAKE_HOST_SYSTEM_VERSION "36")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "aarch64")
 
 include("/data/data/com.termux/files/home/opt/android-sdk/ndk/27.1.12297006/build/cmake/android.toolchain.cmake")
